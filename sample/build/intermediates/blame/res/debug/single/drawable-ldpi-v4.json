@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/maksim/Coding/PasswordEditText/sample/build/intermediates/res/merged/debug/drawable-ldpi-v4/ic_visibility_off_24dp.png",
+        "source": "/Users/maksim/Coding/PasswordEditText/sample/build/intermediates/exploded-aar/PasswordEditText/library/unspecified/res/drawable-ldpi-v4/ic_visibility_off_24dp.png"
+    },
+    {
+        "merged": "/Users/maksim/Coding/PasswordEditText/sample/build/intermediates/res/merged/debug/drawable-ldpi-v4/ic_visibility_24dp.png",
+        "source": "/Users/maksim/Coding/PasswordEditText/sample/build/intermediates/exploded-aar/PasswordEditText/library/unspecified/res/drawable-ldpi-v4/ic_visibility_24dp.png"
+    }
+]
