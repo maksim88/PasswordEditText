@@ -10,7 +10,7 @@ A simple extension to the standard Android EditText which shows an icon on the r
 How does it look like?
 --------
 
-TODO: provide screenshots
+![alt tag](https://raw.github.com/maksim88/PasswordEditText/master/media/screenshot.png)
 
 Usage
 --------
