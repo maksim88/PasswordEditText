@@ -2,10 +2,11 @@ package com.maksim88.passwordedittext;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
@@ -24,15 +25,14 @@ public class PasswordEditText extends EditText {
     /**
      * This area is added as padding to increase the clickable area of the icon
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private static int EXTRA_TAPPABLE_AREA = 50;
-    private static String STATE_SHOW_ICON = "iconShown";
-    private static String PARCELABLE_NAME = "superState";
 
     @DrawableRes
-    private static int SHOW_PW_ICON = R.drawable.ic_visibility_off_24dp;
+    private int showPwIcon = R.drawable.ic_visibility_24dp;
 
     @DrawableRes
-    private static int HIDE_PW_ICON = R.drawable.ic_visibility_24dp;
+    private int hidePwIcon = R.drawable.ic_visibility_off_24dp;
 
     private boolean showingPasswordIcon;
 
@@ -44,23 +44,30 @@ public class PasswordEditText extends EditText {
 
     public PasswordEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initFields(attrs);
+        initFields(attrs, 0, 0);
     }
 
     public PasswordEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initFields(attrs);
+        initFields(attrs, defStyleAttr, 0);
     }
 
     @TargetApi(21)
     public PasswordEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        initFields(attrs);
+        initFields(attrs, defStyleAttr, defStyleRes);
     }
 
-    public void initFields(AttributeSet attrs) {
-        // attrs not used yet, but may come handy when extending functionality
-
+    public void initFields(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        if (attrs != null) {
+            TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordEditText, defStyleAttr, defStyleRes);
+            try {
+                showPwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_iconShow, showPwIcon);
+                hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_iconHide, hidePwIcon);
+            } finally {
+                styledAttributes.recycle();
+            }
+        }
         setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         setTypeface(Typeface.DEFAULT);
 
@@ -91,22 +98,17 @@ public class PasswordEditText extends EditText {
 
     @Override
     public Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(PARCELABLE_NAME, super.onSaveInstanceState());
-        bundle.putBoolean(STATE_SHOW_ICON, showingPasswordIcon);
-        return bundle;
+        Parcelable superState = super.onSaveInstanceState();
+        return new SavedState(superState, showingPasswordIcon);
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle) state;
-            showingPasswordIcon = bundle.getBoolean(STATE_SHOW_ICON);
-            restorePasswordIconVisibility();
-            showPasswordVisibilityIndicator(true);
-            state = bundle.getParcelable(PARCELABLE_NAME);
-        }
-        super.onRestoreInstanceState(state);
+        SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
+        showingPasswordIcon = savedState.isShowingIcon();
+        restorePasswordIconVisibility();
+        showPasswordVisibilityIndicator(true);
     }
 
     @Override
@@ -129,8 +131,8 @@ public class PasswordEditText extends EditText {
     private void showPasswordVisibilityIndicator(boolean shouldShowIcon) {
         if (shouldShowIcon) {
             Drawable drawable = showingPasswordIcon ?
-                    ContextCompat.getDrawable(getContext(), SHOW_PW_ICON):
-                    ContextCompat.getDrawable(getContext(), HIDE_PW_ICON);
+                    ContextCompat.getDrawable(getContext(), hidePwIcon):
+                    ContextCompat.getDrawable(getContext(), showPwIcon);
 
             setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
             drawableRight = drawable;
@@ -148,12 +150,8 @@ public class PasswordEditText extends EditText {
      * This method may only be called if there is an icon visible
      */
     private void togglePasswordIconVisibility() {
-        if (showingPasswordIcon) {
-            setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-        } else {
-            setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        }
         showingPasswordIcon = !showingPasswordIcon;
+        restorePasswordIconVisibility();
         showPasswordVisibilityIndicator(true);
     }
 
@@ -166,5 +164,48 @@ public class PasswordEditText extends EditText {
         } else {
             setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         }
+        // move cursor to the end of the input as it is being reset automatically
+        setSelection(getText().length());
+
+    }
+
+    /**
+     * Convenience class to save / restore the state of icon.
+     */
+    protected static class SavedState extends BaseSavedState {
+
+        private final boolean mShowingIcon;
+
+        private SavedState(Parcelable superState, boolean showingIcon) {
+            super(superState);
+            mShowingIcon = showingIcon;
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            mShowingIcon = in.readByte() != 0;
+        }
+
+        public boolean isShowingIcon() {
+            return mShowingIcon;
+        }
+
+        @Override
+        public void writeToParcel(Parcel destination, int flags) {
+            super.writeToParcel(destination, flags);
+            destination.writeByte((byte) (mShowingIcon ? 1 : 0));
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Creator<SavedState>() {
+
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+
+        };
     }
 }

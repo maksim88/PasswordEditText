@@ -48,6 +48,32 @@ You can also wrap `PasswordEditText` inside a `TextInputLayout` to get a materia
 Note: be sure to include the design library to use `TextInputLayout`. (for more details see `sample`)
 
 
+Customize
+--------
+
+You can add your own custom icons which are shown on the right side of the ‘EditText‘.
+
+Do this by first adding the custom namespace to your root layout, e.g.:
+```xml
+<LinearLayout
+    [...]
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    [...]
+```
+
+After that you can add the icons with the attributes ‘app:iconShow‘ and ‘app:iconHide‘:
+
+```xml
+<com.maksim88.passwordedittext.PasswordEditText
+            [...]
+            app:iconShow="@drawable/..."
+            app:iconHide="@drawable/..."
+            [...]
+/>
+```
+
+For a working example check out the ‘activity_main.xml‘ inside the ‘sample‘ project.
+
 Download
 --------
 Just include `jitpack.io` inside of your root project `build.gradle`:
