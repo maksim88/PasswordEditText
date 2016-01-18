@@ -59,20 +59,21 @@ Do this by first adding the custom namespace to your root layout, e.g.:
     [...]
     xmlns:app="http://schemas.android.com/apk/res-auto"
     [...]
+</Linearlayout>
 ```
 
-After that you can add the icons with the attributes ‘app:iconShow‘ and ‘app:iconHide‘:
+After that you can add the icons with the attributes `app:iconShow` and `app:iconHide`:
 
 ```xml
 <com.maksim88.passwordedittext.PasswordEditText
-            [...]
-            app:iconShow="@drawable/..."
-            app:iconHide="@drawable/..."
-            [...]
+     [...]
+     app:iconShow="@drawable/..."
+     app:iconHide="@drawable/..."
+     [...]
 />
 ```
 
-For a working example check out the ‘activity_main.xml‘ inside the ‘sample‘ project.
+For a working example check out the `activity_main.xml` inside the `sample` project.
 
 Download
 --------
@@ -91,7 +92,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.1'
+	        compile 'com.github.maksim88:PasswordEditText:v0.2'
 	}
 ```
 
