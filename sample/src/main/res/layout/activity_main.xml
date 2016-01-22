@@ -47,7 +47,7 @@
             android:id="@+id/input_password_repeat"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
-            app:iconShow="@android:drawable/ic_delete"
+            app:pet_iconShow="@android:drawable/ic_delete"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="Repeat password" />

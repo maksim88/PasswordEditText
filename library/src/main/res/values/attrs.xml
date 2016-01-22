@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PasswordEditText">
-        <attr name="iconShow" format="integer" />
-        <attr name="iconHide" format="integer" />
+        <attr name="pet_iconShow" format="integer" />
+        <attr name="pet_iconHide" format="integer" />
     </declare-styleable>
 </resources>

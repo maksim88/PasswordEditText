@@ -1,5 +1,4 @@
-[![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText)
-
+[![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Password%20EditText-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3048)
 
 Password EditText
 ============
@@ -62,14 +61,14 @@ Do this by first adding the custom namespace to your root layout, e.g.:
 </Linearlayout>
 ```
 
-After that you can add the icons with the attributes `app:iconShow` and `app:iconHide`:
+After that you can add the icons with the attributes `app:pet_iconShow` and `app:pet_iconHide`:
 
 ```xml
 <com.maksim88.passwordedittext.PasswordEditText
-     [...]
-     app:iconShow="@drawable/..."
-     app:iconHide="@drawable/..."
-     [...]
+    [...]
+    app:pet_iconShow="@drawable/..."
+    app:pet_iconHide="@drawable/..."
+    [...]
 />
 ```
 
@@ -92,7 +91,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.2'
+	        compile 'com.github.maksim88:PasswordEditText:v0.3'
 	}
 ```
 

@@ -62,8 +62,8 @@ public class PasswordEditText extends EditText {
         if (attrs != null) {
             TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordEditText, defStyleAttr, defStyleRes);
             try {
-                showPwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_iconShow, showPwIcon);
-                hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_iconHide, hidePwIcon);
+                showPwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconShow, showPwIcon);
+                hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconHide, hidePwIcon);
             } finally {
                 styledAttributes.recycle();
             }
