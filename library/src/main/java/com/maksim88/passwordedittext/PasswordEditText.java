@@ -1,6 +1,5 @@
 package com.maksim88.passwordedittext;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -10,17 +9,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 
 /**
  * Created by maksim on 15.01.16.
  */
-public class PasswordEditText extends EditText {
+public class PasswordEditText extends AppCompatEditText {
 
     /**
      * This area is added as padding to increase the clickable area of the icon
@@ -44,23 +43,17 @@ public class PasswordEditText extends EditText {
 
     public PasswordEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initFields(attrs, 0, 0);
+        initFields(attrs, 0);
     }
 
     public PasswordEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initFields(attrs, defStyleAttr, 0);
+        initFields(attrs, defStyleAttr);
     }
 
-    @TargetApi(21)
-    public PasswordEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initFields(attrs, defStyleAttr, defStyleRes);
-    }
-
-    public void initFields(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public void initFields(AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
-            TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordEditText, defStyleAttr, defStyleRes);
+            TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordEditText, defStyleAttr, 0);
             try {
                 showPwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconShow, showPwIcon);
                 hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconHide, hidePwIcon);
