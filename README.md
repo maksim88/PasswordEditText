@@ -51,7 +51,7 @@ Note: be sure to include the design library to use `TextInputLayout`. (for more 
 Customize
 --------
 
-You can add your own custom icons which are shown on the right side of the ‘EditText‘.
+You can add your own custom icons which are shown on the right side of the `EditText`.
 
 Do this by first adding the custom namespace to your root layout, e.g.:
 ```xml
