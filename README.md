@@ -57,7 +57,7 @@ Do this by first adding the custom namespace to your root layout, e.g.:
 <LinearLayout
     [...]
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    [...]
+    [...]>
 </Linearlayout>
 ```
 
@@ -91,7 +91,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.3'
+	        compile 'com.github.maksim88:PasswordEditText:v0.4'
 	}
 ```
 
