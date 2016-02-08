@@ -13,11 +13,15 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_email"
+        android:gravity="start"
+        android:textAlignment="viewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/input_email"
+            android:gravity="start"
+            android:textAlignment="viewStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -27,11 +31,15 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_password"
         android:layout_width="match_parent"
+        android:gravity="start"
+        android:textAlignment="viewStart"
         android:layout_height="wrap_content">
 
         <com.maksim88.passwordedittext.PasswordEditText
             android:id="@+id/input_password"
             android:layout_marginTop="16dp"
+            android:gravity="start"
+            android:textAlignment="viewStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -40,6 +48,8 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_password_repeat"
+        android:gravity="start"
+        android:textAlignment="viewStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -47,13 +57,34 @@
             android:id="@+id/input_password_repeat"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
+            android:gravity="start"
+            android:textAlignment="viewStart"
             app:pet_iconShow="@android:drawable/ic_delete"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="Repeat password" />
     </android.support.design.widget.TextInputLayout>
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_password_rtl"
+        android:gravity="start"
+        android:textAlignment="viewStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.maksim88.passwordedittext.PasswordEditText
+            android:id="@+id/input_password_rtl"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="مرحبا" />
+    </android.support.design.widget.TextInputLayout>
+
     <Button
+        android:id="@+id/submit_button"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

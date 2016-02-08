@@ -1,10 +1,12 @@
 package com.maksim88.passwordedittext;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
@@ -14,10 +16,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 /**
- * Created by maksim on 15.01.16.
+ * Created by maksim on 15.01.16. 
  */
 public class PasswordEditText extends AppCompatEditText {
 
@@ -35,7 +38,9 @@ public class PasswordEditText extends AppCompatEditText {
 
     private boolean showingPasswordIcon;
 
-    private Drawable drawableRight;
+    private Drawable drawableSide;
+
+    private boolean isRTL;
 
     public PasswordEditText(Context context) {
         this(context, null);
@@ -64,6 +69,8 @@ public class PasswordEditText extends AppCompatEditText {
         setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         setTypeface(Typeface.DEFAULT);
 
+        isRTL = isRTLLanguage();
+
         addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,6 +96,16 @@ public class PasswordEditText extends AppCompatEditText {
         });
     }
 
+    private boolean isRTLLanguage() {
+        //TODO investigate why ViewUtils.isLayoutRtl(this) not working as intended
+        // as getLayoutDirection was introduced in API 17, under 17 we default to LTR
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1){
+            return false;
+        }
+        Configuration config = getResources().getConfiguration();
+        return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -106,13 +123,14 @@ public class PasswordEditText extends AppCompatEditText {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (drawableRight == null) {
+        if (drawableSide == null) {
             return super.onTouchEvent(event);
         }
-        final Rect bounds = drawableRight.getBounds();
+        final Rect bounds = drawableSide.getBounds();
         final int x = (int) event.getX();
-        int rightCoord = getRight() - bounds.width() - EXTRA_TAPPABLE_AREA;
-        if (x >= rightCoord) {
+        int iconXRect = isRTL? getLeft() + bounds.width() + EXTRA_TAPPABLE_AREA :
+                getRight() - bounds.width() - EXTRA_TAPPABLE_AREA;
+        if (isRTL? x<= iconXRect : x >= iconXRect) {
             togglePasswordIconVisibility();
             event.setAction(MotionEvent.ACTION_CANCEL);
             return false;
@@ -127,12 +145,12 @@ public class PasswordEditText extends AppCompatEditText {
                     ContextCompat.getDrawable(getContext(), hidePwIcon):
                     ContextCompat.getDrawable(getContext(), showPwIcon);
 
-            setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
-            drawableRight = drawable;
+            setCompoundDrawablesWithIntrinsicBounds(isRTL? drawable : null, null, isRTL? null : drawable, null);
+            drawableSide = drawable;
         } else {
             // reset drawable
             setCompoundDrawables(null, null, null, null);
-            drawableRight = null;
+            drawableSide = null;
         }
     }
 
