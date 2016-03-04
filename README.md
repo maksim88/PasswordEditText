@@ -72,7 +72,28 @@ After that you can add the icons with the attributes `app:pet_iconShow` and `app
 />
 ```
 
-For a working example check out the `activity_main.xml` inside the `sample` project.
+You can also set toggle the monospace Font inside the `PasswordEditTexts` with `app:pet_nonMonospaceFont`:
+
+```xml
+<com.maksim88.passwordedittext.PasswordEditText
+    [...]
+    app:pet_nonMonospaceFont="true"
+    [...]
+/>
+```
+
+Another customization is to just toggle the visibility of the password when the icon is hovered with `app:pet_hoverShowsPw`:
+
+```xml
+<com.maksim88.passwordedittext.PasswordEditText
+    [...]
+    app:pet_hoverShowsPw="true"
+    [...]
+/>
+```
+
+
+For a working example of the different customizations check out the `activity_main.xml` inside the `sample` project.
 
 Download
 --------
@@ -91,7 +112,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.4'
+	        compile 'com.github.maksim88:PasswordEditText:v0.5'
 	}
 ```
 

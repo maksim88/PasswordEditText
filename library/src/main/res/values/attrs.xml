@@ -3,5 +3,7 @@
     <declare-styleable name="PasswordEditText">
         <attr name="pet_iconShow" format="integer" />
         <attr name="pet_iconHide" format="integer" />
+        <attr name="pet_hoverShowsPw" format="boolean" />
+        <attr name="pet_nonMonospaceFont" format="boolean" />
     </declare-styleable>
 </resources>

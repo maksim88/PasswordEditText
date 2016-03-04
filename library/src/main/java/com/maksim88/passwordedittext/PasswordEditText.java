@@ -13,6 +13,7 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -27,8 +28,7 @@ public class PasswordEditText extends AppCompatEditText {
     /**
      * This area is added as padding to increase the clickable area of the icon
      */
-    @SuppressWarnings("FieldCanBeLocal")
-    private static int EXTRA_TAPPABLE_AREA = 50;
+    private final static int EXTRA_TAPPABLE_AREA = 50;
 
     @DrawableRes
     private int showPwIcon = R.drawable.ic_visibility_24dp;
@@ -36,11 +36,25 @@ public class PasswordEditText extends AppCompatEditText {
     @DrawableRes
     private int hidePwIcon = R.drawable.ic_visibility_off_24dp;
 
-    private boolean showingPasswordIcon;
+    private Drawable showPwDrawable;
 
-    private Drawable drawableSide;
+    private Drawable hidePwDrawable;
+
+    private boolean passwordVisible;
+
+    private boolean isNumericInputType;
 
     private boolean isRTL;
+
+    private boolean showingIcon;
+
+    private boolean setErrorCalled;
+
+    private boolean hoverShowsPw;
+
+    private boolean useNonMonospaceFont;
+
+    private boolean handlingHoverEvent;
 
     public PasswordEditText(Context context) {
         this(context, null);
@@ -62,14 +76,24 @@ public class PasswordEditText extends AppCompatEditText {
             try {
                 showPwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconShow, showPwIcon);
                 hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconHide, hidePwIcon);
+                hoverShowsPw = styledAttributes.getBoolean(R.styleable.PasswordEditText_pet_hoverShowsPw, false);
+                useNonMonospaceFont = styledAttributes.getBoolean(R.styleable.PasswordEditText_pet_nonMonospaceFont, false);
             } finally {
                 styledAttributes.recycle();
             }
         }
-        setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-        setTypeface(Typeface.DEFAULT);
+
+        hidePwDrawable = ContextCompat.getDrawable(getContext(), hidePwIcon);
+
+        showPwDrawable = ContextCompat.getDrawable(getContext(), showPwIcon);
+
+        if (useNonMonospaceFont) {
+            setTypeface(Typeface.DEFAULT);
+        }
 
         isRTL = isRTLLanguage();
+
+        isNumericInputType = matchNumericalInputType();
 
         addTextChangedListener(new TextWatcher() {
             @Override
@@ -79,19 +103,29 @@ public class PasswordEditText extends AppCompatEditText {
 
             @Override
             public void onTextChanged(CharSequence seq, int start, int before, int count) {
-                if (seq.length() > 0) {
-                    showPasswordVisibilityIndicator(true);
-                } else {
-                    // hides the indicator if no text inside text field
-                    showingPasswordIcon = false;
-                    restorePasswordIconVisibility();
-                    showPasswordVisibilityIndicator(false);
-                }
+                //NOOP
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                //NOOP
+                if (s.length() > 0) {
+                    if (setErrorCalled) {
+                        // resets drawables after setError was called as this leads to icons
+                        // not changing anymore afterwards
+                        setCompoundDrawables(null, null, null, null);
+                        setErrorCalled = false;
+                        showPasswordVisibilityIndicator(true);
+                    }
+                    if (!showingIcon) {
+                        showPasswordVisibilityIndicator(true);
+                    }
+                } else {
+                    // hides the indicator if no text inside text field
+                    passwordVisible = false;
+                    handlePasswordInputVisibility();
+                    showPasswordVisibilityIndicator(false);
+                }
+
             }
         });
     }
@@ -106,34 +140,75 @@ public class PasswordEditText extends AppCompatEditText {
         return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
+    private boolean matchNumericalInputType() {
+        int type = getInputType();
+        boolean classNumber = (type & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
+        boolean numberVariation = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            numberVariation = (type & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD;
+        }
+        return classNumber || numberVariation;
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        return new SavedState(superState, showingPasswordIcon);
+        return new SavedState(superState, passwordVisible);
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
-        showingPasswordIcon = savedState.isShowingIcon();
-        restorePasswordIconVisibility();
+        passwordVisible = savedState.isShowingIcon();
+        handlePasswordInputVisibility();
         showPasswordVisibilityIndicator(true);
     }
 
     @Override
+    public void setError(CharSequence error) {
+        super.setError(error);
+        setErrorCalled = true;
+
+    }
+
+    @Override
+    public void setError(CharSequence error, Drawable icon) {
+        super.setError(error, icon);
+        setErrorCalled = true;
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (drawableSide == null) {
+        if (!showingIcon) {
             return super.onTouchEvent(event);
         }
-        final Rect bounds = drawableSide.getBounds();
+        final Rect bounds = showPwDrawable.getBounds();
         final int x = (int) event.getX();
         int iconXRect = isRTL? getLeft() + bounds.width() + EXTRA_TAPPABLE_AREA :
                 getRight() - bounds.width() - EXTRA_TAPPABLE_AREA;
-        if (isRTL? x<= iconXRect : x >= iconXRect) {
-            togglePasswordIconVisibility();
-            event.setAction(MotionEvent.ACTION_CANCEL);
-            return false;
+
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (hoverShowsPw) {
+                    if (isRTL? x<= iconXRect : x >= iconXRect) {
+                        togglePasswordIconVisibility();
+                        // prevent keyboard from coming up
+                        event.setAction(MotionEvent.ACTION_CANCEL);
+                        handlingHoverEvent = true;
+                        return true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (handlingHoverEvent || (isRTL? x<= iconXRect : x >= iconXRect)) {
+                    togglePasswordIconVisibility();
+                    // prevent keyboard from coming up
+                    event.setAction(MotionEvent.ACTION_CANCEL);
+                    handlingHoverEvent = false;
+                    return true;
+                }
+                break;
         }
         return super.onTouchEvent(event);
     }
@@ -141,16 +216,13 @@ public class PasswordEditText extends AppCompatEditText {
 
     private void showPasswordVisibilityIndicator(boolean shouldShowIcon) {
         if (shouldShowIcon) {
-            Drawable drawable = showingPasswordIcon ?
-                    ContextCompat.getDrawable(getContext(), hidePwIcon):
-                    ContextCompat.getDrawable(getContext(), showPwIcon);
-
-            setCompoundDrawablesWithIntrinsicBounds(isRTL? drawable : null, null, isRTL? null : drawable, null);
-            drawableSide = drawable;
+            Drawable drawable = passwordVisible ? hidePwDrawable : showPwDrawable;
+            showingIcon = true;
+            setCompoundDrawablesWithIntrinsicBounds(isRTL ? drawable : null, null, isRTL ? null : drawable, null);
         } else {
             // reset drawable
             setCompoundDrawables(null, null, null, null);
-            drawableSide = null;
+            showingIcon = false;
         }
     }
 
@@ -161,22 +233,36 @@ public class PasswordEditText extends AppCompatEditText {
      * This method may only be called if there is an icon visible
      */
     private void togglePasswordIconVisibility() {
-        showingPasswordIcon = !showingPasswordIcon;
-        restorePasswordIconVisibility();
+        passwordVisible = !passwordVisible;
+        handlePasswordInputVisibility();
         showPasswordVisibilityIndicator(true);
     }
 
     /**
      * This method is called when restoring the state (e.g. on orientation change)
      */
-    private void restorePasswordIconVisibility() {
-        if (showingPasswordIcon) {
-            setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    private void handlePasswordInputVisibility() {
+        if (passwordVisible) {
+            if (isNumericInputType) {
+                //TODO there is no EditorInfo.TYPE_NUMBER_VARIATION_VISIBLE_PASSWORD
+                setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            } else {
+                setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            }
         } else {
-            setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+            if (isNumericInputType && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
+
+            } else {
+                setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+
         }
         // move cursor to the end of the input as it is being reset automatically
         setSelection(getText().length());
+        if (useNonMonospaceFont) {
+            setTypeface(Typeface.DEFAULT);
+        }
 
     }
 
