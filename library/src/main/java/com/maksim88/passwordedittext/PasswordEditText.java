@@ -36,6 +36,12 @@ public class PasswordEditText extends AppCompatEditText {
     @DrawableRes
     private int hidePwIcon = R.drawable.ic_visibility_off_24dp;
 
+    //Visibility enabled: Icon opacity at 54%, with the password visible
+    private final static int ALPHA_ICON_ENABLED = (int) (255 * 0.54f);
+
+    //Visibility disabled: Icon opacity at 38%, with the password represented by midline ellipses
+    private final static int ALPHA_ICON_DISABLED = (int) (255 * 0.38f);
+
     private Drawable showPwDrawable;
 
     private Drawable hidePwDrawable;
@@ -53,6 +59,8 @@ public class PasswordEditText extends AppCompatEditText {
     private boolean hoverShowsPw;
 
     private boolean useNonMonospaceFont;
+
+    private boolean disableIconAlpha;
 
     private boolean handlingHoverEvent;
 
@@ -78,14 +86,20 @@ public class PasswordEditText extends AppCompatEditText {
                 hidePwIcon = styledAttributes.getResourceId(R.styleable.PasswordEditText_pet_iconHide, hidePwIcon);
                 hoverShowsPw = styledAttributes.getBoolean(R.styleable.PasswordEditText_pet_hoverShowsPw, false);
                 useNonMonospaceFont = styledAttributes.getBoolean(R.styleable.PasswordEditText_pet_nonMonospaceFont, false);
+                disableIconAlpha = styledAttributes.getBoolean(R.styleable.PasswordEditText_pet_disableIconAlpha, false);
             } finally {
                 styledAttributes.recycle();
             }
         }
 
-        hidePwDrawable = ContextCompat.getDrawable(getContext(), hidePwIcon);
+        // As the state (like alpha) should not be shared, mutate to make sure it is not reused
+        hidePwDrawable = ContextCompat.getDrawable(getContext(), hidePwIcon).mutate();
+        showPwDrawable = ContextCompat.getDrawable(getContext(), showPwIcon).mutate();
 
-        showPwDrawable = ContextCompat.getDrawable(getContext(), showPwIcon);
+        if (!disableIconAlpha) {
+            hidePwDrawable.setAlpha(ALPHA_ICON_ENABLED);
+            showPwDrawable.setAlpha(ALPHA_ICON_DISABLED);
+        }
 
         if (useNonMonospaceFont) {
             setTypeface(Typeface.DEFAULT);
@@ -182,35 +196,34 @@ public class PasswordEditText extends AppCompatEditText {
     public boolean onTouchEvent(MotionEvent event) {
         if (!showingIcon) {
             return super.onTouchEvent(event);
-        }
-        final Rect bounds = showPwDrawable.getBounds();
-        final int x = (int) event.getX();
-        int iconXRect = isRTL? getLeft() + bounds.width() + EXTRA_TAPPABLE_AREA :
-                getRight() - bounds.width() - EXTRA_TAPPABLE_AREA;
+        } else {
+            final Rect bounds = showPwDrawable.getBounds();
+            final int x = (int) event.getX();
+            int iconXRect = isRTL? getLeft() + bounds.width() + EXTRA_TAPPABLE_AREA :
+                    getRight() - bounds.width() - EXTRA_TAPPABLE_AREA;
 
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (hoverShowsPw) {
-                    if (isRTL? x<= iconXRect : x >= iconXRect) {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (hoverShowsPw) {
+                        if (isRTL? x<= iconXRect : x >= iconXRect) {
+                            togglePasswordIconVisibility();
+                            // prevent keyboard from coming up
+                            event.setAction(MotionEvent.ACTION_CANCEL);
+                            handlingHoverEvent = true;
+                        }
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (handlingHoverEvent || (isRTL? x<= iconXRect : x >= iconXRect)) {
                         togglePasswordIconVisibility();
                         // prevent keyboard from coming up
                         event.setAction(MotionEvent.ACTION_CANCEL);
-                        handlingHoverEvent = true;
-                        return true;
+                        handlingHoverEvent = false;
                     }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (handlingHoverEvent || (isRTL? x<= iconXRect : x >= iconXRect)) {
-                    togglePasswordIconVisibility();
-                    // prevent keyboard from coming up
-                    event.setAction(MotionEvent.ACTION_CANCEL);
-                    handlingHoverEvent = false;
-                    return true;
-                }
-                break;
+                    break;
+            }
+            return super.onTouchEvent(event);
         }
-        return super.onTouchEvent(event);
     }
 
 

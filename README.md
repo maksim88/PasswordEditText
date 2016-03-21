@@ -47,6 +47,10 @@ You can also wrap `PasswordEditText` inside a `TextInputLayout` to get a materia
 Note: be sure to include the design library to use `TextInputLayout`. (for more details see `sample`)
 
 
+You can also use `TextInputLayout` to achieve an even prettier `setError()` dialog using `setErrorEnabled(true)` on the outer `TextInputLayout`
+and then calling `setError()` on it. This underlines the text and shows an erroe message underneath the text.
+
+
 Customize
 --------
 
@@ -92,6 +96,17 @@ Another customization is to just toggle the visibility of the password when the 
 />
 ```
 
+If you do not like the alpha, that is set to all the icons, you can disable it using `app:pet_disableIconAlpha`:
+NOTE: alpha values are taken from the material design guidelines (https://www.google.com/design/spec/components/text-fields.html#text-fields-password-input)
+
+```xml
+<com.maksim88.passwordedittext.PasswordEditText
+    [...]
+    app:pet_disableIconAlphaPw="true"
+    [...]
+/>
+```
+
 
 For a working example of the different customizations check out the `activity_main.xml` inside the `sample` project.
 
@@ -112,7 +127,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.5'
+	        compile 'com.github.maksim88:PasswordEditText:v0.6'
 	}
 ```
 
