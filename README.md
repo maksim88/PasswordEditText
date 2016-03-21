@@ -96,13 +96,13 @@ Another customization is to just toggle the visibility of the password when the 
 />
 ```
 
-If you do not like the alpha, that is set to all the icons, you can disable it using `app:pet_disableIconAlpha`:
+If you do not like the alpha, that is set to all the icons, you can disable it using `app:pet_disableIconAlpha`
 NOTE: alpha values are taken from the material design guidelines (https://www.google.com/design/spec/components/text-fields.html#text-fields-password-input)
 
 ```xml
 <com.maksim88.passwordedittext.PasswordEditText
     [...]
-    app:pet_disableIconAlphaPw="true"
+    app:pet_disableIconAlpha="true"
     [...]
 />
 ```
