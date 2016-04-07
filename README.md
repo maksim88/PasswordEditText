@@ -48,7 +48,7 @@ Note: be sure to include the design library to use `TextInputLayout`. (for more 
 
 
 You can also use `TextInputLayout` to achieve an even prettier `setError()` dialog using `setErrorEnabled(true)` on the outer `TextInputLayout`
-and then calling `setError()` on it. This underlines the text and shows an erroe message underneath the text.
+and then calling `setError()` on it. This underlines the text and shows an error message underneath the text.
 
 
 Customize
@@ -97,6 +97,7 @@ Another customization is to just toggle the visibility of the password when the 
 ```
 
 If you do not like the alpha, that is set to all the icons, you can disable it using `app:pet_disableIconAlpha`
+
 NOTE: alpha values are taken from the material design guidelines (https://www.google.com/design/spec/components/text-fields.html#text-fields-password-input)
 
 ```xml
