@@ -257,15 +257,13 @@ public class PasswordEditText extends AppCompatEditText {
     private void handlePasswordInputVisibility() {
         if (passwordVisible) {
             if (isNumericInputType) {
-                //TODO there is no EditorInfo.TYPE_NUMBER_VARIATION_VISIBLE_PASSWORD
-                setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                setInputType(EditorInfo.TYPE_CLASS_NUMBER);
             } else {
                 setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             }
         } else {
             if (isNumericInputType && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
-
             } else {
                 setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
             }
