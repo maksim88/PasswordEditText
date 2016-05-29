@@ -128,7 +128,7 @@ After that you can easily include the library in your app `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.6'
+	        compile 'com.github.maksim88:PasswordEditText:v0.7'
 	}
 ```
 
