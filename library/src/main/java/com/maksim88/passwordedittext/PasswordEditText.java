@@ -13,12 +13,11 @@ import android.support.annotation.DrawableRes;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 
 /**
  * Created by maksim on 15.01.16. 
@@ -47,8 +46,6 @@ public class PasswordEditText extends TextInputEditText {
     private Drawable hidePwDrawable;
 
     private boolean passwordVisible;
-
-    private boolean isNumericInputType;
 
     private boolean isRTL;
 
@@ -107,8 +104,6 @@ public class PasswordEditText extends TextInputEditText {
 
         isRTL = isRTLLanguage();
 
-        isNumericInputType = matchNumericalInputType();
-
         addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -152,16 +147,6 @@ public class PasswordEditText extends TextInputEditText {
         }
         Configuration config = getResources().getConfiguration();
         return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-    }
-
-    private boolean matchNumericalInputType() {
-        int type = getInputType();
-        boolean classNumber = (type & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
-        boolean numberVariation = false;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            numberVariation = (type & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD;
-        }
-        return classNumber || numberVariation;
     }
 
     @Override
@@ -256,25 +241,15 @@ public class PasswordEditText extends TextInputEditText {
      * This method is called when restoring the state (e.g. on orientation change)
      */
     private void handlePasswordInputVisibility() {
+        int selectionStart = getSelectionStart();
+        int selectionEnd = getSelectionEnd();
         if (passwordVisible) {
-            if (isNumericInputType) {
-                setInputType(EditorInfo.TYPE_CLASS_NUMBER);
-            } else {
-                setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
+            setTransformationMethod(null);
         } else {
-            if (isNumericInputType && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
-            } else {
-                setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-            }
+            setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         }
-        // move cursor to the end of the input as it is being reset automatically
-        setSelection(getText().length());
-        if (useNonMonospaceFont) {
-            setTypeface(Typeface.DEFAULT);
-        }
+        setSelection(selectionStart, selectionEnd);
 
     }
 
