@@ -10,8 +10,8 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -23,7 +23,7 @@ import android.view.inputmethod.EditorInfo;
 /**
  * Created by maksim on 15.01.16. 
  */
-public class PasswordEditText extends AppCompatEditText {
+public class PasswordEditText extends TextInputEditText {
 
     /**
      * This area is added as padding to increase the clickable area of the icon
@@ -167,16 +167,17 @@ public class PasswordEditText extends AppCompatEditText {
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        return new SavedState(superState, passwordVisible);
+        return new SavedState(superState, showingIcon, passwordVisible);
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
-        passwordVisible = savedState.isShowingIcon();
+        showingIcon = savedState.isShowingIcon();
+        passwordVisible = savedState.isPasswordVisible();
         handlePasswordInputVisibility();
-        showPasswordVisibilityIndicator(true);
+        showPasswordVisibilityIndicator(showingIcon);
     }
 
     @Override
@@ -283,25 +284,33 @@ public class PasswordEditText extends AppCompatEditText {
     protected static class SavedState extends BaseSavedState {
 
         private final boolean mShowingIcon;
+        private final boolean mPasswordVisible;
 
-        private SavedState(Parcelable superState, boolean showingIcon) {
+        private SavedState(Parcelable superState, boolean sI, boolean pV) {
             super(superState);
-            mShowingIcon = showingIcon;
+            mShowingIcon = sI;
+            mPasswordVisible = pV;
         }
 
         private SavedState(Parcel in) {
             super(in);
             mShowingIcon = in.readByte() != 0;
+            mPasswordVisible = in.readByte() != 0;
         }
 
         public boolean isShowingIcon() {
             return mShowingIcon;
         }
 
+        public boolean isPasswordVisible() {
+            return mPasswordVisible;
+        }
+
         @Override
         public void writeToParcel(Parcel destination, int flags) {
             super.writeToParcel(destination, flags);
             destination.writeByte((byte) (mShowingIcon ? 1 : 0));
+            destination.writeByte((byte) (mPasswordVisible ? 1 : 0));
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR = new Creator<SavedState>() {
