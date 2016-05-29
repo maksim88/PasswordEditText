@@ -113,24 +113,18 @@ For a working example of the different customizations check out the `activity_ma
 
 Download
 --------
-Just include `jitpack.io` inside of your root project `build.gradle`:
 
-```groovy
-allprojects {
-		repositories {
-			...
-			maven { url "https://jitpack.io" }
-		}
-	}
-```
-
-After that you can easily include the library in your app `build.gradle`:
+The library is available from `jcenter()`, so all you need to do is include it in your apps `build.gradle`:
 
 ```groovy
 dependencies {
-	        compile 'com.github.maksim88:PasswordEditText:v0.7'
-	}
+          compile 'com.maksim88:PasswordEditText:0.8'
+  }
 ```
+
+
+Alternatively you can use `jitpack.io`:
+More info here: https://jitpack.io/#maksim88/PasswordEditText
 
 
 Questions?
