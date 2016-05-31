@@ -118,7 +118,7 @@ The library is available from `jcenter()`, so all you need to do is include it i
 
 ```groovy
 dependencies {
-          compile 'com.maksim88:PasswordEditText:0.8'
+          compile 'com.maksim88:PasswordEditText:v0.8'
   }
 ```
 
