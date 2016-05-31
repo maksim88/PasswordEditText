@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'com.maksim88'
     PUBLISH_ARTIFACT_ID = 'PasswordEditText'
-    PUBLISH_VERSION = '0.8'
+    PUBLISH_VERSION = 'v0.8'
 }
 
 android {
