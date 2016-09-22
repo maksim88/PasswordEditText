@@ -1,9 +1,15 @@
-[![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Password%20EditText-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3048)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Password%20EditText-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3048) [![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText)
 
 Password EditText
 ============
 
 A simple extension to the standard Android EditText which shows an icon on the right side of the field and lets the user toggle the visibility of the password he puts in.
+
+
+NOTE
+--------
+Support-library versions `24.2.0` and upwards now have built-in functionality to show an eye icon and toggle password visibility (For more info see [docs](https://developer.android.com/reference/android/support/design/widget/TextInputLayout.html#attr_android.support.design:passwordToggleEnabled)).
+You can nevertheless still use this lib, maybe because you want some of the features that the built-in approach does not have.
 
 
 How does it look like?
