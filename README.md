@@ -1,4 +1,6 @@
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Password%20EditText-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3048) [![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Password%20EditText-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/3048)
+ [ ![Download](https://api.bintray.com/packages/maksim88/PasswordEditText/PasswordEditText/images/download.svg) ](https://bintray.com/maksim88/PasswordEditText/PasswordEditText/_latestVersion)
+ [![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText)
 
 Password EditText
 ============
