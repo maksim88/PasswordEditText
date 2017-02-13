@@ -1,6 +1,5 @@
 package com.maksim88.passwordedittext;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -12,7 +11,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,8 +18,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
-import android.view.ViewTreeObserver;
 
 /**
  * Created by maksim on 15.01.16. 
@@ -81,23 +77,6 @@ public class PasswordEditText extends TextInputEditText {
 
 	public void initFields(AttributeSet attrs, int defStyleAttr) {
 
-		getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-			@SuppressLint("NewApi")
-			@SuppressWarnings("deprecation")
-			@Override
-			public void onGlobalLayout() {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-					getViewTreeObserver().removeOnGlobalLayoutListener(this);
-				} else {
-					getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				}
-				// Disable the built-in password toggle
-				ViewParent parent = getParent();
-				if (parent != null && parent.getParent() instanceof TextInputLayout) {
-					((TextInputLayout) parent.getParent()).setPasswordVisibilityToggleEnabled(false);
-				}
-			}
-		});
 		if (attrs != null) {
 			TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordEditText, defStyleAttr, 0);
 			try {
