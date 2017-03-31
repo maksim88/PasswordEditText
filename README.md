@@ -2,6 +2,23 @@
  [ ![Download](https://api.bintray.com/packages/maksim88/PasswordEditText/PasswordEditText/images/download.svg) ](https://bintray.com/maksim88/PasswordEditText/PasswordEditText/_latestVersion)
  [![](https://jitpack.io/v/maksim88/PasswordEditText.svg)](https://jitpack.io/#maksim88/PasswordEditText)
 
+Deprecated
+===========
+This library is deprecated now as there is an official way to use the password toggle with the `TextInputLayout` (inside the support library starting with version `24.2.0`).
+```
+<android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+</android.support.design.widget.TextInputLayout
+```
+For more information check the official [docs](https://developer.android.com/reference/android/support/design/widget/TextInputLayout.html#attr_android.support.design:passwordToggleEnabled).
+
 Password EditText
 ============
 
